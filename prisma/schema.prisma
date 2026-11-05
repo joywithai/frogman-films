@@ -1,0 +1,326 @@
+// Frogman Films Database Schema
+// Spec: PostgreSQL + Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAYMENT_PENDING
+  PAID
+  FULFILLED
+  SHIPPED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  INITIALIZED
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum ProductFormat {
+  PHYSICAL
+  DIGITAL
+  HYBRID
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  passwordHash  String?
+  role          Role      @default(USER)
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders        Order[]
+  entitlements  DigitalEntitlement[]
+  sessions      Session[]
+  accounts      Account[]
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  sku         String         @unique
+  title       String
+  subtitle    String?
+  description String
+  priceCents  Int            // Stored in minor units (integer cents) to avoid floating point issues
+  currency    String         @default("USD")
+  stock       Int            @default(0)
+  isAvailable Boolean        @default(true)
+  isFeatured  Boolean        @default(false)
+  format      ProductFormat  @default(PHYSICAL)
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+  variants    ProductVariant[]
+  orderItems   OrderItem[]
+  entitlements DigitalEntitlement[]
+  createdAt    DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([slug])
+  @@index([sku])
+  @@index([categoryId])
+  @@index([isFeatured, isAvailable])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name        String   // e.g. "Pack of 5", "A3 Risograph", "Collector Box"
+  sku         String   @unique
+  priceCents  Int
+  stock       Int      @default(0)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+  @@index([sku])
+}
+
+model Film {
+  id           String       @id @default(cuid())
+  slug         String       @unique
+  archiveId    String       @unique // e.g. "FF-ARCHIVE-001"
+  title        String
+  synopsis     String
+  director     String       @default("Frogman Films Studio")
+  releaseYear  Int
+  runtimeMins  Int
+  aspectRatio  String       @default("4:3")
+  isFeatured   Boolean      @default(false)
+  isPublic     Boolean      @default(true)
+  posterUrl    String
+  backdropUrl  String?
+  videoAssetId String?      @unique
+  videoAsset   VideoAsset?  @relation(fields: [videoAssetId], references: [id])
+  tags         String[]
+  credits      Json?        // Cast, animators, music, sound design
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([slug])
+  @@index([archiveId])
+  @@index([isFeatured, isPublic])
+}
+
+model VideoAsset {
+  id          String   @id @default(cuid())
+  provider    String   // "mux", "cloudflare_stream", "mock_local"
+  externalId  String?  // Provider playback or asset ID
+  playbackUrl String?  // Signed URL or streaming manifest
+  durationSec Int?
+  status      String   @default("ready") // "preparing", "ready", "error"
+  film        Film?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Book {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  folioId      String        @unique // e.g. "FOLIO-N01"
+  title        String
+  subtitle     String?
+  creator      String        @default("Frogman Films Studio")
+  synopsis     String
+  format       ProductFormat @default(PHYSICAL)
+  pageCount    Int
+  dimensions   String?       // e.g. "210mm x 280mm, Casebound Linen"
+  priceCents   Int
+  currency     String        @default("USD")
+  stock        Int           @default(0)
+  isAvailable  Boolean       @default(true)
+  isFeatured   Boolean       @default(false)
+  coverUrl     String
+  samplePages  Json?         // Array of approved sample spreads: [{ page: 1, url: '...', caption: '...' }]
+  privateFile  String?       // Protected digital PDF/EPUB key in secure storage
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([folioId])
+  @@index([isFeatured, isAvailable])
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique // e.g. "FF-2026-94812"
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+  guestEmail      String?
+  status          OrderStatus   @default(PENDING)
+  currency        String        @default("USD")
+  subtotalCents   Int
+  taxCents        Int           @default(0)
+  shippingCents   Int           @default(0)
+  totalCents      Int
+  shippingAddress Json?
+  billingAddress  Json?
+  items           OrderItem[]
+  payments        Payment[]
+  entitlements    DigitalEntitlement[]
+  idempotencyKey  String?       @unique
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([orderNumber])
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id])
+  
+  // Historical snapshot fields (persists exact data at time of sale)
+  snapshotTitle    String
+  snapshotSku      String
+  snapshotVariant  String?
+  quantity         Int
+  unitPriceCents   Int
+  totalPriceCents  Int
+  currency         String   @default("USD")
+  format           ProductFormat @default(PHYSICAL)
+  createdAt        DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  orderId         String
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  provider        String        // "stripe", "sslcommerz", "bkash", "sandbox_test"
+  providerTxId    String?       @unique
+  amountCents     Int
+  currency        String        @default("USD")
+  status          PaymentStatus @default(INITIALIZED)
+  rawWebhookEvent Json?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([orderId])
+  @@index([provider, providerTxId])
+}
+
+model DigitalEntitlement {
+  id          String    @id @default(cuid())
+  userId      String?
+  user        User?     @relation(fields: [userId], references: [id])
+  orderId     String
+  order       Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     Product?  @relation(fields: [productId], references: [id])
+  token       String    @unique @default(cuid())
+  expiresAt   DateTime?
+  accessCount Int       @default(0)
+  fileKey     String    // Secure storage asset key
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@index([orderId])
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  name      String
+  fileKey   String   @unique
+  mimeType  String
+  sizeBytes Int
+  url       String
+  altText   String?
+  createdAt DateTime @default(now())
+
+  @@index([fileKey])
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
+}

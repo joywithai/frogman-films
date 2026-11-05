@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg: #070709;
+    --color-bg-2: #0c0c0f;
+    --color-surface: #111114;
+    --color-surface-hover: #19191d;
+    --color-border: #29292d;
+    --color-border-subtle: #1c1c20;
+    --color-text: #efeee9;
+    --color-text-muted: #a3a1a0;
+    --color-text-dim: #737176;
+
+    /* Frogman palette */
+    --frogman-cream: #ece7d5;
+    --frogman-cream-light: #f6f3e7;
+    --frogman-cream-shadow: #d8d2bd;
+    --frogman-dark: #1f1e1b;
+    --frogman-bed-wood: #261f1c;
+    --frogman-bed-sheet: #171c21;
+    --frogman-blanket: #2c353d;
+    --frogman-blanket-accent: #3d4a56;
+
+    --font-display: var(--font-serif, "Newsreader", "Times New Roman", serif);
+    --font-body: var(--font-sans, "Geist", -apple-system, BlinkMacSystemFont, sans-serif);
+    --font-mono: var(--font-mono, "Geist Mono", monospace);
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    selection-background-color: #3d4a56;
+    selection-color: #efeee9;
+  }
+
+  ::selection {
+    background: #333a42;
+    color: #efeee9;
+  }
+}
+
+/* Editorial Serif & Archive Typography utilities */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-archive {
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  font-feature-settings: "tnum" on, "zero" on;
+}
+
+/* Subtle archival film grain overlay */
+.film-grain {
+  position: relative;
+}
+
+.film-grain::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0.035;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Vintage fine rules & borders */
+.archive-border {
+  border: 1px solid var(--color-border);
+}
+
+.archive-border-b {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.archive-border-t {
+  border-top: 1px solid var(--color-border);
+}
+
+.archive-rule {
+  height: 1px;
+  background-color: var(--color-border);
+  width: 100%;
+}
+
+/* Accessible focus ring */
+*:focus-visible {
+  outline: 2px solid #efeee9;
+  outline-offset: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

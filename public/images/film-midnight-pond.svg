@@ -1,0 +1,10 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#0d1117"/>
+  <circle cx="200" cy="110" r="45" fill="#f4ebd9" opacity="0.85"/>
+  <path d="M 40 240 Q 200 210 360 240 L 400 300 L 0 300 Z" fill="#06090e"/>
+  <path d="M 120 230 Q 140 180 160 230 Z" fill="#1f2937"/>
+  <path d="M 180 230 Q 200 170 220 230 Z" fill="#1f2937"/>
+  <path d="M 240 230 Q 260 190 280 230 Z" fill="#1f2937"/>
+  <text x="200" y="275" font-family="serif" font-size="16" fill="#ece7d5" text-anchor="middle" letter-spacing="2">THE MIDNIGHT POND</text>
+  <text x="200" y="292" font-family="monospace" font-size="9" fill="#737176" text-anchor="middle">ARCHIVE REEL // 14 MINS</text>
+</svg>
