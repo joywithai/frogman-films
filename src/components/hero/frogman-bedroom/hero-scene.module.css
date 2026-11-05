@@ -4,8 +4,8 @@
    ========================================================================== */
 
 .stage {
-  --sink: 111px;  /* down onto the pillow */
-  --slide: 272px; /* and right, back into bed */
+  --sink: 197px;  /* down onto the pillow */
+  --slide: 276px; /* and right, back into bed (the scene tightens this on portrait) */
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -173,13 +173,10 @@
   transition: opacity 120ms ease-out 0ms;
 }
 
-/* the blanket that was covering him is thrown back */
+/* he pushes the blanket off as he gets up */
 .stage[data-awake="true"] .duvetFront {
-  opacity: 0;
-  transform: translateY(34px) scaleY(0.72);
-  transition:
-    opacity 200ms ease-out 20ms,
-    transform 520ms cubic-bezier(0.4, 0, 0.6, 1) 20ms;
+  transform: translateY(16px) scaleY(0.94);
+  transition: transform 620ms cubic-bezier(0.34, 1.24, 0.6, 1) 40ms;
 }
 
 .stage[data-awake="true"] .duvetBreath {
@@ -188,7 +185,9 @@
 
 .stage[data-awake="true"] .lowerBody {
   opacity: 1;
-  transition: opacity 220ms ease-in 250ms;
+  /* only once he has slid clear of the blanket, otherwise his legs pop out
+     from under the bed mid-move */
+  transition: opacity 200ms ease-in 580ms;
 }
 
 .stage[data-awake="true"] .nightShade {
@@ -225,20 +224,12 @@
 }
 
 .stage[data-awake="true"] .groundShadow {
-  opacity: 0.55;
+  opacity: 0.42;
 }
 
 /* --------------------------------------------------------------------------
    Reduced motion: no breathing loops, near-instant state change
    -------------------------------------------------------------------------- */
-/* Narrow screens: he gets up in front of the bed instead of stepping to the
-   side, so both poses stay inside the portrait crop. */
-@media (max-width: 767px) {
-  .stage {
-    --slide: 120px;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .duvetBreath,
   .lampGlow {
