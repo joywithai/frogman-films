@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getProducts } from "@/server/queries/products";
 import { ShoppingBag, Search, Tag, ArrowRight } from "lucide-react";
 
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
+
+
 export const metadata = {
   title: "Shop & Archive Editions — Frogman Films",
   description:

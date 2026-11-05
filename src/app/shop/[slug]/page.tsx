@@ -4,6 +4,10 @@ import { getProductBySlug } from "@/server/queries/products";
 import { ProductDetailView } from "@/components/shop/ProductDetailView";
 import { ArrowLeft } from "lucide-react";
 
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
+
+
 export async function generateMetadata({
   params,
 }: {

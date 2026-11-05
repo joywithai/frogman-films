@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getBookBySlug, getBooks } from "@/server/queries/books";
 import { BookAddToCart } from "@/components/stories/BookAddToCart";
 import {
+
   ArrowLeft,
   BookOpen,
   CheckCircle2,
@@ -10,6 +11,9 @@ import {
   Layers,
   Sparkles,
 } from "lucide-react";
+
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
 
 export async function generateMetadata({
   params,

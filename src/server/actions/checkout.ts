@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db/prisma";
 import { initialProducts, initialBooks } from "@/lib/data/mock-db";
-import { CartItem, ProductFormat } from "@/lib/types";
+import { CartItem, ProductFormat, OrderStatus } from "@/lib/types";
 import { paymentAdapter } from "@/lib/payments/adapter";
 
 export interface CheckoutResult {
@@ -122,7 +122,7 @@ export async function processCheckout(formData: {
           data: {
             orderNumber,
             guestEmail: formData.guestEmail,
-            status: OrderStatus.PENDING,
+            status: "PENDING" as OrderStatus,
             currency: "USD",
             subtotalCents: validatedSubtotalCents,
             taxCents,

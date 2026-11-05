@@ -57,17 +57,17 @@ export function Masthead() {
         {/* Brand Insignia */}
         <Link
           href="/"
-          className="flex items-center gap-3 group focus:outline-none focus:ring-1 focus:ring-[#ece7d5]"
+          className="flex items-center gap-2 sm:gap-3 group focus:outline-none focus:ring-1 focus:ring-[#ece7d5] shrink-0"
         >
           <div className="w-8 h-8 rounded-full border border-[var(--color-border)] bg-[#111114] flex items-center justify-center font-display text-sm font-semibold text-[#ece7d5] group-hover:border-[#ece7d5] transition-colors">
             FF
           </div>
           <div className="flex flex-col">
-            <span className="font-display text-lg tracking-wider font-semibold text-[var(--color-text)]">
+            <span className="font-display text-sm sm:text-lg tracking-wider font-semibold text-[var(--color-text)] whitespace-nowrap">
               FROGMAN FILMS
             </span>
-            <span className="text-[9px] font-mono-archive tracking-widest text-[var(--color-text-dim)] uppercase -mt-0.5">
-              Studio & Catalogue
+            <span className="hidden sm:block text-[9px] font-mono-archive tracking-widest text-[var(--color-text-dim)] uppercase -mt-0.5">
+              Studio &amp; Catalogue
             </span>
           </div>
         </Link>

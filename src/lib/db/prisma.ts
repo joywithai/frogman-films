@@ -19,7 +19,7 @@ function createPrismaClient(): PrismaClient {
       log:
         process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
     });
-  } catch (error) {
+  } catch {
     console.warn(
       "Prisma client is not initialized (run `npx prisma generate`). Using static archive data."
     );

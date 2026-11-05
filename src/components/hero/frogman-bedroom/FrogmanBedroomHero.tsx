@@ -9,7 +9,7 @@ export function FrogmanBedroomHero() {
   const [isPinnedAwake, setIsPinnedAwake] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [interactionHint, setInteractionHint] = useState("Move pointer near bed or press 'Wake Frogman'");
+  const [interactionHint, setInteractionHint] = useState("Hover or tap the bed — or press 'Wake Frogman'");
 
   const containerRef = useRef<HTMLDivElement>(null);
   const sleepTimeoutRef = useRef<NodeJS.Timeout | null>(null);

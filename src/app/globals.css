@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+/* Self-hosted editorial type (Fontsource) — no runtime Google Fonts fetch. */
+@import "@fontsource/newsreader/latin-400.css";
+@import "@fontsource/newsreader/latin-400-italic.css";
+@import "@fontsource/newsreader/latin-500.css";
+@import "@fontsource/newsreader/latin-500-italic.css";
+@import "@fontsource/newsreader/latin-600.css";
+@import "@fontsource/geist-sans/latin-400.css";
+@import "@fontsource/geist-sans/latin-500.css";
+@import "@fontsource/geist-sans/latin-600.css";
+@import "@fontsource/geist-mono/latin-400.css";
+@import "@fontsource/geist-mono/latin-500.css";
+
 @layer base {
   :root {
     --color-bg: #070709;
@@ -22,9 +34,10 @@
     --frogman-blanket: #2c353d;
     --frogman-blanket-accent: #3d4a56;
 
-    --font-display: var(--font-serif, "Newsreader", "Times New Roman", serif);
-    --font-body: var(--font-sans, "Geist", -apple-system, BlinkMacSystemFont, sans-serif);
-    --font-mono: var(--font-mono, "Geist Mono", monospace);
+    --font-display: "Newsreader", "Times New Roman", Georgia, serif;
+    --font-body: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+    --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
   body {

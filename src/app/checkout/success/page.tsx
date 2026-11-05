@@ -2,6 +2,10 @@ import Link from "next/link";
 import { CheckCircle2, ShieldCheck, Download, Package, ArrowRight } from "lucide-react";
 import { storageAdapter } from "@/lib/storage/adapter";
 
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
+
+
 export const metadata = {
   title: "Order Confirmed — Frogman Films",
   description: "Your archival order has been verified and registered.",

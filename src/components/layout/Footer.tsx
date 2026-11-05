@@ -1,10 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 
+// Copyright year is resolved on the client after mount: reading the clock
+// during prerender is not allowed under Next 16 `cacheComponents`.
+const FALLBACK_YEAR = 2026;
+
 export function Footer() {
+  const [year, setYear] = useState(FALLBACK_YEAR);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
   const [email, setEmail] = useState("");
   const [newsletterStatus, setNewsletterStatus] = useState<
     "idle" | "loading" | "success" | "unconfigured"
@@ -162,7 +171,7 @@ export function Footer() {
         {/* Lower Folio Copyright Line */}
         <div className="mt-12 pt-8 border-t border-[#1c1c20] flex flex-wrap justify-between items-center gap-4 text-xs font-mono-archive text-[var(--color-text-dim)]">
           <div>
-            © {new Date().getFullYear()} FROGMAN FILMS. ALL RIGHTS RESERVED. CHARACTER: FROGMAN.
+            © {year} FROGMAN FILMS. ALL RIGHTS RESERVED. CHARACTER: FROGMAN.
           </div>
           <div>
             ARCHIVE STANDARD: POSTGRESQL + PRISMA // TAILWIND // NEXT.JS APP ROUTER

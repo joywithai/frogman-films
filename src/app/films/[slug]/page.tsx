@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getFilmBySlug, getFilms } from "@/server/queries/films";
 import { getVideoPlaybackInfo } from "@/lib/video/adapter";
 import {
+
   Calendar,
   Clock,
   Share2,
@@ -12,6 +13,9 @@ import {
   Play,
   CheckCircle,
 } from "lucide-react";
+
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
 
 export async function generateMetadata({
   params,

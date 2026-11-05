@@ -4,6 +4,10 @@ import { getBooks } from "@/server/queries/books";
 import { getProducts } from "@/server/queries/products";
 import { Search, Film, BookOpen, ShoppingBag, ArrowRight } from "lucide-react";
 
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
+
+
 export const metadata = {
   title: "Search Studio Vault — Frogman Films",
 };

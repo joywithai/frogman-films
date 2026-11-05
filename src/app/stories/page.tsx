@@ -2,6 +2,10 @@ import Link from "next/link";
 import { getBooks } from "@/server/queries/books";
 import { BookOpen, Search, Layers, ShieldCheck, ArrowRight } from "lucide-react";
 
+// Reads URL data (params/searchParams); opt out of blocking prerender.
+export const instant = false;
+
+
 export const metadata = {
   title: "Storybook Folios — Frogman Films",
   description: "Archival clothbound storybooks, prints, and illustrated folios by Frogman Films.",

@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getFilms } from "@/server/queries/films";
 import { Film, Play, Search, Clock, Calendar, Tag } from "lucide-react";
 
+export const instant = false;
+
 export const metadata = {
   title: "Film Archive — Frogman Films",
   description: "Browse the complete 2D animated film catalogue of Frogman Films.",
