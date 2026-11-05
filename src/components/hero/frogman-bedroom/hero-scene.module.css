@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Frogman bedroom hero — text-free interactive scene.
+   Everything below is transform/opacity only (compositor friendly).
+   ========================================================================== */
+
+.stage {
+  --sink: 111px;  /* down onto the pillow */
+  --slide: 272px; /* and right, back into bed */
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Transform origins (fill-box = relative to the element's own bounds)
+   -------------------------------------------------------------------------- */
+.body,
+.head,
+.eyes,
+.duvetFront,
+.duvetBreath {
+  transform-box: fill-box;
+}
+
+.head {
+  transform-origin: 50% 92%; /* neck */
+  will-change: transform;
+}
+
+.headTrack {
+  transform-box: fill-box;
+  transform-origin: 50% 92%;
+}
+
+.eyesOpen {
+  transform-origin: 50% 50%;
+}
+
+/* while he is under the duvet only his head is above the blanket */
+.lowerBody {
+  opacity: 0;
+  transition: opacity 200ms ease-out 40ms;
+}
+
+.duvetFront {
+  transform-origin: 50% 100%;
+}
+
+/* a little push-off accent on the way up (never used on the way down, so the
+   fast flop back into bed stays clean) */
+.bodyInner {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.stage[data-awake="true"] .bodyInner {
+  animation: riseHop 1000ms cubic-bezier(0.3, 0.9, 0.4, 1) 60ms both;
+}
+
+@keyframes riseHop {
+  0% {
+    transform: translateY(24px) scaleY(0.94);
+  }
+  55% {
+    transform: translateY(-14px) scaleY(1.03);
+  }
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.duvetBreath {
+  transform-origin: 50% 100%;
+}
+
+/* --------------------------------------------------------------------------
+   SLEEPING (default state)
+   -------------------------------------------------------------------------- */
+.body {
+  transform: translate(0, 0);
+  transition: transform 420ms cubic-bezier(0.42, 0, 0.62, 1) 0ms;
+  will-change: transform;
+}
+
+.head {
+  transform: rotate(-5deg);
+  transition: transform 420ms cubic-bezier(0.45, 0.05, 0.55, 0.95) 0ms;
+}
+
+/* sleeping: only the lid arcs are drawn */
+.eyesOpen {
+  opacity: 0;
+  transition: opacity 150ms ease-out 120ms;
+}
+
+.eyesClosed {
+  opacity: 1;
+  transition: opacity 220ms ease-in 80ms;
+}
+
+.duvetFront {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  transition:
+    opacity 320ms ease-out 40ms,
+    transform 420ms cubic-bezier(0.34, 1.4, 0.64, 1) 40ms;
+}
+
+.duvetBreath {
+  animation: breathe 4.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(1.5px) scaleY(1.014);
+  }
+}
+
+.lampGlow {
+  animation: lampPulse 7s ease-in-out infinite;
+}
+
+@keyframes lampPulse {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.nightShade {
+  opacity: 0.42;
+  transition: opacity 700ms ease;
+}
+
+.moonbeam {
+  opacity: 0.75;
+  transition: opacity 900ms ease;
+}
+
+/* --------------------------------------------------------------------------
+   AWAKE (pointer inside the hero)
+   -------------------------------------------------------------------------- */
+.stage[data-awake="true"] .body {
+  transform: translate(calc(-1 * var(--slide)), calc(-1 * var(--sink)));
+  transition: transform 1050ms cubic-bezier(0.36, 0.04, 0.44, 1.12) 70ms;
+}
+
+.stage[data-awake="true"] .head {
+  transform: rotate(0deg);
+  transition: transform 760ms cubic-bezier(0.24, 1.1, 0.32, 1) 260ms;
+}
+
+.stage[data-awake="true"] .eyesOpen {
+  opacity: 1;
+  transition: opacity 140ms ease-out 40ms;
+}
+
+.stage[data-awake="true"] .eyesClosed {
+  opacity: 0;
+  transition: opacity 120ms ease-out 0ms;
+}
+
+/* the blanket that was covering him is thrown back */
+.stage[data-awake="true"] .duvetFront {
+  opacity: 0;
+  transform: translateY(34px) scaleY(0.72);
+  transition:
+    opacity 200ms ease-out 20ms,
+    transform 520ms cubic-bezier(0.4, 0, 0.6, 1) 20ms;
+}
+
+.stage[data-awake="true"] .duvetBreath {
+  animation: none;
+}
+
+.stage[data-awake="true"] .lowerBody {
+  opacity: 1;
+  transition: opacity 220ms ease-in 250ms;
+}
+
+.stage[data-awake="true"] .nightShade {
+  opacity: 0.14;
+}
+
+.stage[data-awake="true"] .moonbeam {
+  opacity: 0.45;
+}
+
+/* --------------------------------------------------------------------------
+   Blink (only while awake)
+   -------------------------------------------------------------------------- */
+.stage[data-awake="true"] .eyesOpen.blink {
+  animation: blink 150ms ease-in-out;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.05);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Feet shadow breathes with him
+   -------------------------------------------------------------------------- */
+.groundShadow {
+  opacity: 0;
+  transition: opacity 500ms ease 300ms;
+}
+
+.stage[data-awake="true"] .groundShadow {
+  opacity: 0.55;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: no breathing loops, near-instant state change
+   -------------------------------------------------------------------------- */
+/* Narrow screens: he gets up in front of the bed instead of stepping to the
+   side, so both poses stay inside the portrait crop. */
+@media (max-width: 767px) {
+  .stage {
+    --slide: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .duvetBreath,
+  .lampGlow {
+    animation: none;
+  }
+
+  .body,
+  .head,
+  .eyesOpen,
+  .eyesClosed,
+  .lowerBody,
+  .duvetFront,
+  .groundShadow,
+  .nightShade,
+  .moonbeam {
+    transition-duration: 120ms !important;
+    transition-delay: 0ms !important;
+  }
+}
